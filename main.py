@@ -2,9 +2,9 @@
 import os
 import funcs
 
-minimum = 1
-maximum = 1000
-every = 100
+minimum = 100000
+maximum = 200000
+every = 1000
 interval = 100
 
 mode = input('enter the mode (r to delete images, w to download images): ').lower() 
