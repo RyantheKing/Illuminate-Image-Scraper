@@ -36,6 +36,8 @@ def search(to_search, interval):
                 local_file.write(resp.content) 
         
         count += 1
+    
+    print('done') 
 
 def iterate(minimum, maximum, every, interval=1): 
     global blank
