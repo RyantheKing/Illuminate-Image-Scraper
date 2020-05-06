@@ -4,7 +4,7 @@ import threading
 
 blank = None
 
-def search(to_search, interval): 
+def search(to_search, directory): 
     global blank
 
     for i in to_search: 
@@ -26,18 +26,16 @@ def search(to_search, interval):
             if blank is None: 
                 blank = resp.content
             elif resp.content != blank: 
-                with open((f'{i}.jpg'), 'wb+') as local_file: 
+                with open((f'{directory}{i}.jpg'), 'wb+') as local_file: 
                     #print(resp.content)  
 
                     #shutil.copyfileobj(resp.raw, local_file) 
 
                     local_file.write(resp.content) 
-    
-    print('done') 
 
 threads = [] 
 
-def iterate(minimum, maximum, every, interval=1): 
+def iterate(minimum, maximum, every, directory): 
     global blank
 
     threads.clear() 
@@ -52,10 +50,14 @@ def iterate(minimum, maximum, every, interval=1):
 
         to_search = nums[start:end] 
 
-        t = threading.Thread(target=search, daemon=True, args=(to_search, interval)) 
+        t = threading.Thread(target=search, daemon=True, args=(to_search, directory)) 
 
         threads.append(t) 
 
         t.start() 
+
+    print('all threads started') 
     
     [t.join() for t in threads] 
+
+    print('all threads finished') 

@@ -2,24 +2,21 @@
 import os
 import funcs
 
-minimum = 100000
-maximum = 200000
-every = 1000
-interval = 100
+from constants import * 
 
 mode = input('enter the mode (r to delete images, w to download images): ').lower() 
 
 print('e') 
 
 if mode == 'r': 
-    for path in os.listdir(): 
+    for path in os.listdir(directory): 
         name, *ext = path.split('.') 
 
         if ext and ext[0] == 'jpg': 
-            os.remove(path) 
+            os.remove(f'{directory}{path}') 
 
 elif mode == 'w': 
-    funcs.iterate(minimum, maximum, every, interval=interval) 
+    funcs.iterate(minimum, maximum, every, directory) 
 
     '''
     for i in range(maximum): 
