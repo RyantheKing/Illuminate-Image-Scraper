@@ -2,7 +2,8 @@
 import os
 import funcs
 
-maximum = 100
+minimum = 100000
+maximum = 200000
 
 mode = input('enter the mode (r to delete images, w to download images): ').lower() 
 
@@ -16,7 +17,7 @@ if mode == 'r':
             os.remove(path) 
 
 elif mode == 'w': 
-    funcs.iterate(maximum) 
+    funcs.iterate(minimum, maximum) 
 
     '''
     for i in range(maximum): 
