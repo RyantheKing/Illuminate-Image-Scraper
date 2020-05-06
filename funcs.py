@@ -42,15 +42,13 @@ def iterate(minimum, maximum, every, directory):
 
     blank = None
 
-    nums = range(minimum, maximum) 
-
     search((0,), directory) 
 
-    for i in range(0, len(nums), every): 
+    for i in range(minimum, maximum, every): 
         start = i
-        end = i + every
+        end = min(i + every, maximum) 
 
-        to_search = nums[start:end] 
+        to_search = range(start, end) 
 
         t = threading.Thread(target=search, daemon=True, args=(to_search, directory)) 
 
