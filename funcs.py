@@ -1,13 +1,15 @@
 import requests
 import shutil
 
-def iterate(minimum, maximum): 
-    nums = [0] 
+def iterate(minimum, maximum, interval=1): 
     blank = None
 
-    nums.extend(range(minimum, maximum))
+    nums = (0,) + tuple(range(minimum, maximum)) 
 
     for i in nums: 
+        if i % interval == 0: 
+            print(i) 
+
         # This is the image url.
         image_url = ("https://imagebank.illuminateed.com/imagebank/" + str(i))
         # Open the url image, set stream to True, this will return the stream content.
