@@ -21,4 +21,8 @@ def iterate(maximum):
             blank = resp.content
         elif resp.content != blank: 
             with open((f'{i}.jpg'), 'wb+') as local_file: 
-                shutil.copyfileobj(resp.raw, local_file) 
+                #print(resp.content)  
+
+                #shutil.copyfileobj(resp.raw, local_file) 
+
+                local_file.write(resp.content) 

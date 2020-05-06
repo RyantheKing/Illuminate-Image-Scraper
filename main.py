@@ -2,7 +2,7 @@
 import os
 import funcs
 
-maximum = 10000000
+maximum = 100
 
 mode = input('enter the mode (r to delete images, w to download images): ').lower() 
 
