@@ -10,9 +10,6 @@ def search(to_search, interval):
     count = 0
 
     for i in to_search: 
-        if i % interval == 0: 
-            print(i) 
-
         # This is the image url.
         image_url = ("https://imagebank.illuminateed.com/imagebank/" + str(i))
         # Open the url image, set stream to True, this will return the stream content.
@@ -39,8 +36,12 @@ def search(to_search, interval):
     
     print('done') 
 
+threads = [] 
+
 def iterate(minimum, maximum, every, interval=1): 
     global blank
+
+    threads.clear() 
 
     blank = None
 
@@ -52,4 +53,10 @@ def iterate(minimum, maximum, every, interval=1):
 
         to_search = nums[start:end] 
 
-        threading.Thread(target=search, daemon=True, args=(to_search, interval)).start() 
+        t = threading.Thread(target=search, daemon=True, args=(to_search, interval)) 
+
+        threads.append(t) 
+
+        t.start() 
+    
+    [t.join() for t in threads] 
