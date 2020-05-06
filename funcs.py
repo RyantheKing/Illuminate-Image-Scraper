@@ -1,12 +1,15 @@
 import requests
 import shutil
+import threading
 
-def iterate(minimum, maximum, interval=1): 
-    blank = None
+blank = None
 
-    nums = (0,) + tuple(range(minimum, maximum)) 
+def search(to_search, interval): 
+    global blank
 
-    for i in nums: 
+    count = 0
+
+    for i in to_search: 
         if i % interval == 0: 
             print(i) 
 
@@ -31,3 +34,20 @@ def iterate(minimum, maximum, interval=1):
                 #shutil.copyfileobj(resp.raw, local_file) 
 
                 local_file.write(resp.content) 
+        
+        count += 1
+
+def iterate(minimum, maximum, every, interval=1): 
+    global blank
+
+    blank = None
+
+    nums = (0,) + tuple(range(minimum, maximum)) 
+
+    for i in range(0, len(nums), every): 
+        start = i
+        end = i + every
+
+        to_search = nums[start:end] 
+
+        threading.Thread(target=search, daemon=True, args=(to_search, interval)).start() 
