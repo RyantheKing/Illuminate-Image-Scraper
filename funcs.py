@@ -4,6 +4,17 @@ import threading
 
 blank = None
 
+class CallbackThread(threading.Thread): 
+    def __init__(self, callback, *args, **kwargs): 
+        super().__init__(*args, **kwargs) 
+
+        self.callback = callback
+    
+    def join(self): 
+        super().join() 
+
+        self.callback() 
+
 def search(to_search, directory): 
     global blank
 
@@ -50,14 +61,19 @@ def iterate(minimum, maximum, every, directory):
 
         to_search = range(start, end) 
 
-        t = threading.Thread(target=search, daemon=True, args=(to_search, directory)) 
+        t = CallbackThread(lambda: print(f'thread done, now waiting on {threading.active_count()} others'), target=search, args=(to_search, directory)) 
 
         threads.append(t) 
 
-        t.start() 
+        try: 
+            t.start() 
+        except RuntimeError: 
+            print(threading.active_count()) 
+
+            raise
 
     print('all threads started') 
-    
+
     [t.join() for t in threads] 
 
     print('all threads finished') 
