@@ -42,7 +42,9 @@ def iterate(minimum, maximum, every, directory):
 
     blank = None
 
-    nums = (0,) + tuple(range(minimum, maximum)) 
+    nums = range(minimum, maximum) 
+
+    search((0,), directory) 
 
     for i in range(0, len(nums), every): 
         start = i
