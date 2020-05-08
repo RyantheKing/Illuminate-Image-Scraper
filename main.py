@@ -16,7 +16,9 @@ if mode == 'r':
             os.remove(f'{directory}{path}') 
 
 elif mode == 'w': 
-    funcs.iterate(minimum, maximum, every, directory) 
+    overwrite = input('enter something to allow overwrite, nothing to not overwrite: ') 
+
+    funcs.iterate(minimum, maximum, every, directory, overwrite) 
 
     '''
     for i in range(maximum): 
