@@ -34,7 +34,7 @@ def search(blank, to_search, directory, overwrite):
         path = f'{directory}{i}.jpg'; 
 
         if overwrite or not os.path.exists(path): 
-            print(path) 
+            #print(path) 
 
             # This is the image url.
             image_url = ("https://imagebank.illuminateed.com/imagebank/" + str(i))
