@@ -14,12 +14,12 @@ class CallbackThread(threading.Thread):
 
         self.callback() 
 
-def get_blank(blank=0): 
+def get_blank(timeout, blank=0): 
     # This is the image url.
     image_url = f"https://imagebank.illuminateed.com/imagebank/{blank}"
     # Open the url image, set stream to True, this will return the stream content.
 
-    resp = requests.get(image_url, stream=True) 
+    resp = requests.get(image_url, timeout=timeout, stream=True) 
     # Open a local file with wb ( write binary ) permission.
 
     # Set decode_content value to True, otherwise the downloaded image file's size will be zero.
@@ -29,7 +29,7 @@ def get_blank(blank=0):
 
     return resp.content
 
-def search(blank, to_search, directory, overwrite): 
+def search(blank, to_search, timeout, directory, overwrite): 
     for i in to_search: 
         path = f'{directory}{i}.jpg'; 
 
@@ -40,9 +40,11 @@ def search(blank, to_search, directory, overwrite):
             image_url = ("https://imagebank.illuminateed.com/imagebank/" + str(i))
             # Open the url image, set stream to True, this will return the stream content.
             try: 
-                resp = requests.get(image_url, stream=True) 
+                resp = requests.get(image_url, timeout=timeout, stream=True) 
             except requests.ConnectionError: 
                 print(f'error on number {i}') 
+            except requests.Timeout: 
+                print(f'timeout on number {i}') 
             else: 
                 # Open a local file with wb ( write binary ) permission.
 
@@ -61,10 +63,10 @@ def search(blank, to_search, directory, overwrite):
 
 threads = [] 
 
-def iterate(minimum, maximum, every, directory, overwrite): 
+def iterate(minimum, maximum, every, timeout, directory, overwrite): 
     threads.clear() 
 
-    blank = get_blank() 
+    blank = get_blank(timeout) 
 
     for i in range(minimum, maximum, every): 
         start = i
@@ -72,7 +74,8 @@ def iterate(minimum, maximum, every, directory, overwrite):
 
         to_search = range(start, end) 
 
-        t = CallbackThread(lambda: print(f'thread done, now waiting on {threading.active_count()} others'), target=search, args=(blank, to_search, directory, overwrite)) 
+        t = CallbackThread(lambda: print(f'thread done, now waiting on {threading.active_count()} others'), target=search, 
+        args=(blank, to_search, timeout, directory, overwrite)) 
 
         threads.append(t) 
 

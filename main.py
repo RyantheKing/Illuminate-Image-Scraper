@@ -18,7 +18,7 @@ if mode == 'r':
 elif mode == 'w': 
     overwrite = input('enter something to allow overwrite, nothing to not overwrite: ') 
 
-    funcs.iterate(minimum, maximum, every, directory, overwrite) 
+    funcs.iterate(minimum, maximum, every, timeout, directory, overwrite) 
 
     '''
     for i in range(maximum): 
