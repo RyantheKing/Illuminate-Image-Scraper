@@ -9,16 +9,16 @@ class LoggingThread(threading.Thread):
     selves = 0
     
     def start(self): 
-        self.selves += 1
+        self.__class__.selves += 1
 
         super().start() 
     
     def run(self):
         super().run() 
 
-        self.selves -= 1
+        self.__class__.selves -= 1
 
-        debug(f'thread done, {len(self.selves)} left') 
+        debug(f'thread done, {self.__class__.selves} left') 
 
 def get_blank(timeout, blank=0): 
     # This is the image url.
