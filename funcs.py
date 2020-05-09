@@ -3,16 +3,22 @@ import requests
 import shutil
 import threading
 
-class CallbackThread(threading.Thread): 
-    def __init__(self, callback, *args, **kwargs): 
+from logging_stuff import debug
+
+class LoggingThread(threading.Thread): 
+    selves = [] 
+
+    def __init__(self, *args, **kwargs): 
         super().__init__(*args, **kwargs) 
 
-        self.callback = callback
+        self.selves.append(self) 
     
-    def _bootstrap_inner(self):
-        super()._bootstrap_inner() 
+    def run(self):
+        super().run() 
 
-        self.callback() 
+        self.selves.remove(self) 
+
+        debug(f'thread done, {len(self.selves)} left') 
 
 def get_blank(timeout, blank=0): 
     # This is the image url.
@@ -34,7 +40,7 @@ def search(blank, to_search, timeout, directory, overwrite):
         path = f'{directory}{i}.jpg'; 
 
         if overwrite or not os.path.exists(path): 
-            #print(path) 
+            #debug(path) 
 
             # This is the image url.
             image_url = ("https://imagebank.illuminateed.com/imagebank/" + str(i))
@@ -42,9 +48,9 @@ def search(blank, to_search, timeout, directory, overwrite):
             try: 
                 resp = requests.get(image_url, timeout=timeout, stream=True) 
             except requests.ConnectionError: 
-                print(f'error on number {i}') 
+                debug(f'error on number {i}') 
             except requests.Timeout: 
-                print(f'timeout on number {i}') 
+                debug(f'timeout on number {i}') 
             else: 
                 # Open a local file with wb ( write binary ) permission.
 
@@ -55,17 +61,13 @@ def search(blank, to_search, timeout, directory, overwrite):
 
                 if resp.content != blank: 
                     with open(path, 'wb+') as local_file: 
-                        #print(resp.content)  
+                        #debug(resp.content)  
 
                         #shutil.copyfileobj(resp.raw, local_file) 
 
                         local_file.write(resp.content) 
 
-threads = [] 
-
 def iterate(minimum, maximum, every, timeout, directory, overwrite): 
-    threads.clear() 
-
     blank = get_blank(timeout) 
 
     for i in range(minimum, maximum, every): 
@@ -74,22 +76,17 @@ def iterate(minimum, maximum, every, timeout, directory, overwrite):
 
         to_search = range(start, end) 
 
-        t = CallbackThread(lambda: print(f'thread done, now waiting on {threading.active_count()} others'), target=search, 
-        args=(blank, to_search, timeout, directory, overwrite)) 
-
-        threads.append(t) 
+        t = LoggingThread(target=search, args=(blank, to_search, timeout, directory, overwrite)) 
 
         try: 
             t.start() 
         except RuntimeError: 
-            print(threading.active_count()) 
+            debug(threading.active_count()) 
 
             raise
 
-    print('all threads started') 
+    debug('all threads started') 
 
-    '''
-    [t.join() for t in threads] 
+    [t.join() for t in LoggingThread.selves] 
 
-    print('all threads finished') 
-    ''' 
+    debug('all threads finished') 

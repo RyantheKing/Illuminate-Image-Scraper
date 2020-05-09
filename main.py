@@ -3,10 +3,19 @@ import os
 import funcs
 
 from constants import * 
+import logging_stuff
+from logging_stuff import debug
+
+file = None
+
+if log_file: 
+    file = open(log_file, mode='w') 
+
+    logging_stuff.add_file(file) 
 
 mode = input('enter the mode (r to delete images, w to download images): ').lower() 
 
-print('e') 
+debug('e') 
 
 if mode == 'r': 
     for path in os.listdir(directory): 
@@ -41,10 +50,13 @@ elif mode == 'w':
         
         #if blank == open((str(i)+'.jpg'), 'rb').read():
         #   os.remove((str(i)+".jpg"))
-        #print(blank != open((str(i)+'.jpg'), 'rb').read(), i)
+        #debug(blank != open((str(i)+'.jpg'), 'rb').read(), i)
 
         try:
             Image.open((str(i)+'.jpg'))
         except:
             os.remove((str(i)+".jpg")) 
     ''' 
+
+if file: 
+    file.close() 
