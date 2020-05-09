@@ -9,8 +9,8 @@ class CallbackThread(threading.Thread):
 
         self.callback = callback
     
-    def join(self): 
-        super().join() 
+    def _bootstrap_inner(self):
+        super()._bootstrap_inner() 
 
         self.callback() 
 
@@ -88,6 +88,8 @@ def iterate(minimum, maximum, every, timeout, directory, overwrite):
 
     print('all threads started') 
 
+    '''
     [t.join() for t in threads] 
 
     print('all threads finished') 
+    ''' 
