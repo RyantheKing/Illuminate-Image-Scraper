@@ -6,17 +6,17 @@ import threading
 from logging_stuff import debug
 
 class LoggingThread(threading.Thread): 
-    selves = [] 
+    selves = 0
+    
+    def start(self): 
+        self.selves += 1
 
-    def __init__(self, *args, **kwargs): 
-        super().__init__(*args, **kwargs) 
-
-        self.selves.append(self) 
+        super().start() 
     
     def run(self):
         super().run() 
 
-        self.selves.remove(self) 
+        self.selves -= 1
 
         debug(f'thread done, {len(self.selves)} left') 
 
@@ -68,6 +68,8 @@ def search(blank, to_search, timeout, directory, overwrite):
                         local_file.write(resp.content) 
 
 def iterate(minimum, maximum, every, timeout, directory, overwrite): 
+    threads = [] 
+
     blank = get_blank(timeout) 
 
     for i in range(minimum, maximum, every): 
@@ -78,6 +80,8 @@ def iterate(minimum, maximum, every, timeout, directory, overwrite):
 
         t = LoggingThread(target=search, args=(blank, to_search, timeout, directory, overwrite)) 
 
+        threads.append(t) 
+
         try: 
             t.start() 
         except RuntimeError: 
@@ -85,8 +89,9 @@ def iterate(minimum, maximum, every, timeout, directory, overwrite):
 
             raise
 
+
     debug('all threads started') 
 
-    [t.join() for t in LoggingThread.selves] 
+    [t.join() for t in threads] 
 
     debug('all threads finished') 
